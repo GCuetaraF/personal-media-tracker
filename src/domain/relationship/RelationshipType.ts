@@ -1,0 +1,1 @@
+export type RelationshipType = "HAS_SEASON" | "HAS_EPISODE" | "HAS_ACHIEVEMENT" | "HAS_TRACK" | "HAS_VIDEO";
