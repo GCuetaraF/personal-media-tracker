@@ -130,19 +130,20 @@ export class YouTubeSync {
         await this.metadata.upsert(videoEntityId, normalize.metadata);
 
         if (normalize.metadata.channelId && normalize.metadata.channelTitle) {
-          const { entityId: channelEntityId } = await this.entities.getOrCreateFromSource({
-            kind: "subscription",
-            title: normalize.metadata.channelTitle,
+          const res = await this.entities.getFromSource({
             source: normalize.source,
             externalId: normalize.metadata.channelId,
           });
-          await this.relationships.createRelationship({
-            parentId: channelEntityId,
-            childId: videoEntityId,
-            type: "HAS_SUBSCRIPTION",
-            parentKind: "subscription",
-            childKind: "video",
-          });
+
+          if (res?.entityId) {
+            await this.relationships.createRelationship({
+              parentId: res.entityId,
+              childId: videoEntityId,
+              type: "HAS_SUBSCRIPTION",
+              parentKind: "subscription",
+              childKind: "video",
+            });
+          }
         }
 
         processed++;

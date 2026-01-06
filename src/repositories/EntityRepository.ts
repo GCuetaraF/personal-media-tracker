@@ -54,6 +54,26 @@ export class EntityRepository implements IEntityRepository {
     return { entityId };
   }
 
+  async getFromSource(input: {
+    source: string;
+    externalId: string;
+  }): Promise<{ entityId: number } | null> {
+    const { data: existing, error: findError } = await this.db
+      .from("source_identities")
+      .select("entity_id")
+      .eq("source", input.source)
+      .eq("external_id", input.externalId)
+      .maybeSingle();
+
+    if (findError)
+      throw findError;
+
+    if (existing)
+      return { entityId: existing.entity_id };
+
+    return null;
+  }
+
   async getLatestCreatedAt(
     kind: EntityKind,
   ): Promise<string | undefined> {
