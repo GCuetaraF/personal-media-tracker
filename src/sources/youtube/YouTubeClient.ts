@@ -2,7 +2,10 @@ import { OAuth2Client } from "google-auth-library";
 
 import type {
   YouTubeChannelsResponse,
+  YoutubePlaylistItem,
   YouTubePlaylistItemsResponse,
+  YoutubePlaylistResponse,
+  YoutubeSubscriptionsResponse,
   YouTubeVideoRaw,
   YouTubeVideosResponse,
 } from "./types";
@@ -68,12 +71,12 @@ export class YouTubeClient {
     return this.fetchVideoDetails(videoIds);
   }
 
-  async fetchPlaylistVideos(playlistId: string): Promise<YouTubeVideoRaw[]> {
+  async fetchPlaylistVideos(playlistId: string): Promise<YoutubePlaylistItem[]> {
     const playlistItemsUrl = "https://www.googleapis.com/youtube/v3/playlistItems";
 
     let nextPageToken: string | undefined;
 
-    const videoIds: string[] = [];
+    const playlistItems: YoutubePlaylistItem[] = [];
 
     do {
       const playlistParams = new URLSearchParams({
@@ -91,15 +94,61 @@ export class YouTubeClient {
 
       const playlistJson = (await playlistRes.json()) as YouTubePlaylistItemsResponse;
 
-      videoIds.push(...(playlistJson.items || []).map(item => item.snippet.resourceId.videoId).filter(Boolean));
-
+      playlistItems.push(...(playlistJson.items || []));
       nextPageToken = playlistJson.nextPageToken;
     } while (nextPageToken);
 
-    if (videoIds.length === 0)
+    if (playlistItems.length === 0)
       return [];
 
-    return this.fetchVideoDetails(videoIds);
+    return playlistItems;
+  }
+
+  async fetchPlaylists() {
+    const accessToken = await this.getAccessToken();
+
+    const url = "https://www.googleapis.com/youtube/v3/playlists";
+    const params = new URLSearchParams({
+      part: "snippet",
+      mine: "true",
+      maxResults: "50",
+    });
+
+    const res = await fetch(`${url}?${params}`, {
+      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+    });
+
+    if (!res.ok) {
+      throw new Error(`YouTube API error: ${res.status}`);
+    }
+
+    const json = await res.json() as YoutubePlaylistResponse;
+
+    return json.items;
+  }
+
+  async fetchChannelSubscriptions() {
+    const accessToken = await this.getAccessToken();
+
+    const url = "https://www.googleapis.com/youtube/v3/subscriptions";
+
+    const params = new URLSearchParams({
+      part: "snippet",
+      mine: "true",
+      maxResults: "50",
+    });
+
+    const res = await fetch(`${url}?${params}`, {
+      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+    });
+
+    if (!res.ok) {
+      throw new Error(`YouTube API error: ${res.status}`);
+    }
+
+    const json = await res.json() as YoutubeSubscriptionsResponse;
+
+    return json.items;
   }
 
   private async getAccessToken(): Promise<string> {
@@ -115,31 +164,39 @@ export class YouTubeClient {
   }
 
   private async fetchVideoDetails(videoIds: string[]): Promise<YouTubeVideoRaw[]> {
-    const params = new URLSearchParams({
-      key: this.apiKey,
-      id: videoIds.join(","),
-      part: "snippet,contentDetails",
-      maxResults: String(videoIds.length),
-    });
+    const validIds = videoIds.filter(Boolean);
+    const results: YouTubeVideoRaw[] = [];
+    const batchSize = 50;
 
-    const url = `https://www.googleapis.com/youtube/v3/videos?${params}`;
-    const res = await fetch(url);
+    for (let i = 0; i < validIds.length; i += batchSize) {
+      const batchIds = validIds.slice(i, i + batchSize);
+      const params = new URLSearchParams({
+        key: this.apiKey,
+        id: batchIds.join(","),
+        part: "snippet,contentDetails",
+        maxResults: String(batchIds.length),
+      });
 
-    if (!res.ok) {
-      throw new Error(`YouTube API error: ${res.status}`);
+      const url = `https://www.googleapis.com/youtube/v3/videos?${params}`;
+      const res = await fetch(url);
+
+      if (!res.ok) {
+        throw new Error(`YouTube API error: ${res.status}`);
+      }
+
+      const json = await res.json() as YouTubeVideosResponse;
+      results.push(...(json.items || []).map(item => ({
+        id: item.id,
+        title: item.snippet.title,
+        description: item.snippet.description,
+        publishedAt: item.snippet.publishedAt,
+        channelId: item.snippet.channelId,
+        channelTitle: item.snippet.channelTitle,
+        thumbnails: item.snippet.thumbnails,
+        duration: item.contentDetails.duration,
+      })));
     }
 
-    const json = await res.json() as YouTubeVideosResponse;
-
-    return (json.items || []).map(item => ({
-      id: item.id,
-      title: item.snippet.title,
-      description: item.snippet.description,
-      publishedAt: item.snippet.publishedAt,
-      channelId: item.snippet.channelId,
-      channelTitle: item.snippet.channelTitle,
-      thumbnails: item.snippet.thumbnails,
-      duration: item.contentDetails.duration,
-    }));
+    return results;
   }
 }

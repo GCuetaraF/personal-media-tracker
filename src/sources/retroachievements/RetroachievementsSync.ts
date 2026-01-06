@@ -58,10 +58,21 @@ export class RetroachievementsSync {
     const syncId = await this.syncs.start("retroachievements_achievements");
 
     try {
-      const startDate = await this.entities.getLatestCreatedAt("achievement");
-      const endDate = new Date().toISOString();
+      const startDateStr = await this.entities.getLatestCreatedAt("achievement");
+      let startDate: number;
 
-      const achievements = await this.client.fetchAchievementsBetween(startDate, endDate);
+      if (!startDateStr) {
+        const now = new Date();
+        now.setMonth(now.getMonth() - 1);
+        startDate = Math.floor(now.getTime() / 1000);
+      }
+      else {
+        startDate = Math.floor(new Date(startDateStr).getTime() / 1000);
+      }
+
+      const endDate = Math.floor(Date.now() / 1000);
+
+      const achievements = await this.client.fetchAchievementsBetween(startDate.toString(), endDate.toString());
 
       let processed = 0;
 

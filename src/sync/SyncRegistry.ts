@@ -5,6 +5,9 @@ import { RetroachievementsNormalizer } from "@/sources/retroachievements/Retroac
 import { RetroachievementsSync } from "@/sources/retroachievements/RetroachievementsSync";
 import { SteamClient } from "@/sources/steam/SteamClient";
 import { SteamNormalizer } from "@/sources/steam/SteamNormalizer";
+import { YouTubeClient } from "@/sources/youtube/YouTubeClient";
+import { YouTubeNormalizer } from "@/sources/youtube/YouTubeNormalizer";
+import { YouTubeSync } from "@/sources/youtube/YouTubeSync";
 
 import { EntityRepository } from "../repositories/EntityRepository";
 import { MetadataRepository } from "../repositories/MetadataRepository";
@@ -16,7 +19,7 @@ import { SteamSync } from "../sources/steam/SteamSync";
 export const syncRegistry: Record<string, () => Promise<{ run: () => Promise<void> }>> = {
   steam: async () => {
     const apiKey = env.STEAM_API_KEY;
-    const steamId = ""; // env.STEAM_ID;
+    const steamId = env.STEAM_ID;
 
     if (!apiKey || !steamId) {
       throw new Error("Missing STEAM_API_KEY or STEAM_ID in .env");
@@ -45,5 +48,25 @@ export const syncRegistry: Record<string, () => Promise<{ run: () => Promise<voi
     const syncs = new SourceSyncRepository(db);
 
     return new RetroachievementsSync(client, normalizer, entities, metadata, relationships, syncs);
+  },
+  youtube: async () => {
+    const apiKey = env.YOUTUBE_API_KEY;
+    const clientId = env.YOUTUBE_CLIENT_ID;
+    const clientSecret = env.YOUTUBE_CLIENT_SECRET;
+    const refreshToken = env.YOUTUBE_REFRESH_TOKEN;
+
+    if (!apiKey || !clientId || !clientSecret || !refreshToken) {
+      throw new Error("Missing YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN or YOUTUBE_API_KEY in .env");
+    }
+
+    const client = new YouTubeClient(apiKey, clientId, clientSecret, refreshToken);
+    const normalizer = new YouTubeNormalizer();
+    const entities = new EntityRepository(db);
+    const metadata = new MetadataRepository(db);
+    const relationships = new RelationshipRepository(db);
+    const time = new TimeRepository(db);
+    const syncs = new SourceSyncRepository(db);
+
+    return new YouTubeSync(client, normalizer, entities, metadata, relationships, time, syncs);
   },
 };

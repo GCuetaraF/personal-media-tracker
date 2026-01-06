@@ -11,6 +11,8 @@ export interface IRelationshipRepository {
     parentId: number;
     childId: number;
     type: RelationshipType;
+    parentKind: EntityKind;
+    childKind: EntityKind;
   }) => Promise<void>;
 }
 
@@ -21,12 +23,10 @@ export class RelationshipRepository implements IRelationshipRepository {
     parentId: number;
     childId: number;
     type: RelationshipType;
-    parentKind?: EntityKind;
-    childKind?: EntityKind;
+    parentKind: EntityKind;
+    childKind: EntityKind;
   }): Promise<void> {
-    if (input.parentKind && input.childKind) {
-      assertValidRelationship(input.parentKind, input.childKind, input.type);
-    }
+    assertValidRelationship(input.parentKind, input.childKind, input.type);
 
     if (input.parentId === input.childId)
       return;

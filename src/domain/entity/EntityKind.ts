@@ -1,11 +1,13 @@
 export type EntityKind
-  = | "game"
-  | "achievement"
-  | "movie"
-  | "show"
-  | "season"
-  | "episode"
-  | "album"
-  | "song"
-  | "channel"
-  | "video";
+  = VideoEntityKind
+  | GameEntityKind
+  | MusicEntityKind
+  | MediaEntityKind;
+
+export type VideoEntityKind = "video" | "playlist" | "subscription";
+
+export type GameEntityKind = "game" | "achievement";
+
+export type MusicEntityKind = "album" | "song";
+
+export type MediaEntityKind = "movie" | "show" | "season" | "episode";
