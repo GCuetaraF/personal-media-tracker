@@ -20,7 +20,7 @@
 
     /* Strictness */
     "noUncheckedIndexedAccess": true,
-    "noEmit": true,
+    "outDir": "dist",
     "esModuleInterop": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true
