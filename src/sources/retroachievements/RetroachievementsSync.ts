@@ -63,7 +63,7 @@ export class RetroachievementsSync {
 
       if (!startDateStr) {
         const now = new Date();
-        now.setMonth(now.getMonth() - 1);
+        now.setMonth(now.getMonth() - 2);
         startDate = Math.floor(now.getTime() / 1000);
       }
       else {
@@ -88,11 +88,11 @@ export class RetroachievementsSync {
 
         await this.metadata.upsert(achievementEntityId, normalized.metadata);
 
-        const gameExternalId = normalized.metadata.retroachievements_game_id;
+        const gameExternalId = normalized.metadata.gameId;
 
         const { entityId: gameEntityId } = await this.entities.getOrCreateFromSource({
           kind: "game",
-          title: normalized.metadata.retroachievements_game_title,
+          title: normalized.metadata.gameTitle,
           source: normalized.source,
           externalId: String(gameExternalId),
         });

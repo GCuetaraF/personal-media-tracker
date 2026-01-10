@@ -28,10 +28,11 @@ export const syncRegistry: Record<string, () => Promise<{ run: () => Promise<voi
     const normalizer = new SteamNormalizer();
     const entities = new EntityRepository(db);
     const metadata = new MetadataRepository(db);
+    const relationships = new RelationshipRepository(db);
     const time = new TimeRepository(db);
     const syncs = new SourceSyncRepository(db);
 
-    return new SteamSync(client, normalizer, entities, metadata, time, syncs);
+    return new SteamSync(client, normalizer, entities, metadata, relationships, time, syncs);
   },
   retroachievements: async () => {
     const apiKey = env.RETROACHIEVEMENTS_API_KEY;

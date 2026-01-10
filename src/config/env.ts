@@ -37,6 +37,9 @@ const serverSchema = z.object({
   STEAM_API_KEY: z.string().min(1).optional(),
   STEAM_ID: z.string().min(1).optional(),
 
+  // SteamGridDB
+  STEAMGRIDDB_API_KEY: z.string().min(1).optional(),
+
 });
 
 // eslint-disable-next-line node/no-process-env
@@ -69,6 +72,7 @@ const {
   YOUTUBE_REFRESH_TOKEN,
   STEAM_API_KEY,
   STEAM_ID,
+  STEAMGRIDDB_API_KEY,
   RETROACHIEVEMENTS_API_KEY,
   RETROACHIEVEMENTS_USER_ID,
 } = _serverEnv.data;
@@ -92,6 +96,7 @@ export const env = {
   YOUTUBE_REFRESH_TOKEN,
   STEAM_API_KEY,
   STEAM_ID,
+  STEAMGRIDDB_API_KEY,
   RETROACHIEVEMENTS_API_KEY,
   RETROACHIEVEMENTS_USER_ID,
 };

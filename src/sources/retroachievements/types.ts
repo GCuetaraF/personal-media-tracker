@@ -1,3 +1,9 @@
+export interface RetroachievementsGameProgressResponse {
+  Count: number;
+  Total: number;
+  Results: RetroachievementsGameProgress[];
+}
+
 export interface RetroachievementsGameProgress {
   GameID: number;
   Title: string;
@@ -12,10 +18,22 @@ export interface RetroachievementsGameProgress {
   HighestAwardDate: string;
 }
 
-export interface RetroachievementsGameProgressResponse {
-  Count: number;
-  Total: number;
-  Results: RetroachievementsGameProgress[];
+export interface RetroachievementsNormalizedGame {
+  kind: "game";
+  title: string;
+
+  source: "retroachievements";
+  externalId: string;
+
+  metadata: {
+    platforms: string[];
+    gameId: number;
+    consoleId: number;
+    achievementsUnlocked: number;
+    achievementsTotal: number;
+  } & Record<string, any>;
+
+  timeSeconds?: number;
 }
 
 export interface RetroachievementsAchievement {
@@ -37,24 +55,6 @@ export interface RetroachievementsAchievement {
   CumulScore: number;
   BadgeURL: string;
   GameURL: string;
-}
-
-export interface RetroachievementsNormalizedGame {
-  kind: "game";
-  title: string;
-
-  source: "retroachievements";
-  externalId: string;
-
-  metadata: {
-    platforms: string[];
-    retroachievements_game_id: number;
-    retroachievements_console_id: number;
-    achievements_unlocked: number;
-    achievements_total: number;
-  };
-
-  timeSeconds?: number;
 }
 
 export interface RetroachievementsUnlocksByDateRange {
@@ -86,11 +86,10 @@ export interface RetroachievementsNormalizedAchiement {
   externalId: string;
 
   metadata: {
-    retroachievements_achievement_id: number;
-    retroachievements_game_id: number;
-    retroachievements_game_title: string;
-    retroachievements_points: number;
-    retroachievements_date_unlocked: string;
-  };
-
+    achievementId: number;
+    gameId: number;
+    gameTitle: string;
+    points: number;
+    dateUnlocked: string;
+  } & Record<string, any>;
 }

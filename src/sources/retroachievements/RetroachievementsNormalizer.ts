@@ -11,10 +11,16 @@ export class RetroachievementsNormalizer {
 
       metadata: {
         platforms: [data.ConsoleName],
-        retroachievements_game_id: data.GameID,
-        retroachievements_console_id: data.ConsoleID,
-        achievements_unlocked: data.NumAwarded,
-        achievements_total: data.MaxPossible,
+        gameId: data.GameID,
+        consoleId: data.ConsoleID,
+        achievementsUnlocked: data.NumAwarded,
+        achievementsTotal: data.MaxPossible,
+        icons: {
+          "96x96": data.ImageIcon
+            ? `https://media.retroachievements.org/Images/${data.ImageIcon.replace(/^.*[\\/]/, "")}`
+            : null,
+        },
+        lastPlayed: data.MostRecentAwardedDate,
       },
     };
   }
@@ -28,11 +34,14 @@ export class RetroachievementsNormalizer {
       externalId: String(data.AchievementID),
 
       metadata: {
-        retroachievements_achievement_id: data.AchievementID,
-        retroachievements_game_id: data.GameID,
-        retroachievements_game_title: data.GameTitle,
-        retroachievements_points: data.Points,
-        retroachievements_date_unlocked: data.Date,
+        achievementId: data.AchievementID,
+        gameId: data.GameID,
+        gameTitle: data.GameTitle,
+        points: data.Points,
+        dateUnlocked: data.Date,
+        icon: data.BadgeURL
+          ? `https://media.retroachievements.org/Badge/${data.BadgeURL.replace(/^.*[\\/]/, "")}`
+          : null,
       },
     };
   }
