@@ -61,7 +61,7 @@ export interface SteamNormalizedAchievement {
   metadata: {
     description: string | null;
     icon: string | null;
-  };
+  } & Record<string, any>;
 }
 
 // --- Player Achievements (GetPlayerAchievements) ---

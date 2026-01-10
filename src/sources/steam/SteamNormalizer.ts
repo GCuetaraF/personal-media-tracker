@@ -36,6 +36,7 @@ export class SteamNormalizer {
       metadata: {
         description: achievement.description,
         icon: achievement.icon,
+        dateUnlocked: achievement.unlocktime ?? null,
       },
 
     };
