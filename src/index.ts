@@ -20,6 +20,8 @@ async function main() {
   const sync = await factory();
 
   await sync.run();
+
+  process.exit(0);
 }
 
 main().catch((err) => {

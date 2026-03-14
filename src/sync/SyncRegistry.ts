@@ -15,6 +15,12 @@ import { RelationshipRepository } from "../repositories/RelationshipRepository";
 import { SourceSyncRepository } from "../repositories/SourceSyncRepository";
 import { TimeRepository } from "../repositories/TimeRepository";
 import { SteamSync } from "../sources/steam/SteamSync";
+import { TraktClient } from "@/sources/trakt/TraktClient";
+import { TraktNormalizer } from "@/sources/trakt/TraktNormalizer";
+import { TraktSync } from "@/sources/trakt/TraktSync";
+import { MangaDexClient } from "@/sources/mangadex/MangaDexClient";
+import { MangaDexNormalizer } from "@/sources/mangadex/MangaDexNormalizer";
+import { MangaDexSync } from "@/sources/mangadex/MangaDexSync";
 
 export const syncRegistry: Record<string, () => Promise<{ run: () => Promise<void> }>> = {
   steam: async () => {
@@ -70,4 +76,40 @@ export const syncRegistry: Record<string, () => Promise<{ run: () => Promise<voi
 
     return new YouTubeSync(client, normalizer, entities, metadata, relationships, time, syncs);
   },
+  trakt: async () => {
+    const clientId = env.TRAKT_CLIENT_ID;
+    const userId = env.TRAKT_USER_ID;
+
+    if (!clientId || !userId) {
+      throw new Error("Missing TRAKT_CLIENT_ID or TRAKT_USER_ID in .env");
+    }
+
+    const client = new TraktClient(clientId, userId);
+    const normalizer = new TraktNormalizer();
+    const entities = new EntityRepository(db);
+    const metadata = new MetadataRepository(db)
+    const relationships = new RelationshipRepository(db);
+    const syncs = new SourceSyncRepository(db);
+
+    return new TraktSync(client, normalizer, entities, metadata, relationships, syncs);
+  },
+  mangadex: async () => {
+    const userId = env.MANGADEX_USER_ID;
+    const password = env.MANGADEX_PASSWORD;
+    const clientId = env.MANGADEX_CLIENT_ID;
+    const clientSecret = env.MANGADEX_CLIENT_SECRET;
+
+    if (!userId || !password || !clientId || !clientSecret) {
+      throw new Error("Missing MANGADEX_USER_ID, MANGADEX_PASSWORD, MANGADEX_CLIENT_ID or MANGADEX_CLIENT_SECRET");
+    }
+
+    const client = new MangaDexClient(userId, password, clientId, clientSecret);
+    const normalizer = new MangaDexNormalizer();
+    const entities = new EntityRepository(db);
+    const metadata = new MetadataRepository(db);
+    const relationships = new RelationshipRepository(db);
+    const syncs = new SourceSyncRepository(db);
+
+    return new MangaDexSync(client, normalizer, entities, metadata, relationships, syncs)
+  }
 };

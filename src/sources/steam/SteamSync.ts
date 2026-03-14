@@ -39,7 +39,9 @@ export class SteamSync {
         await this.metadata.upsert(entityId, normalized.metadata);
         await this.time.recordTotalTime({ entityId, totalSeconds: normalized.timeSeconds });
 
-        await this.runTopAchievements(game.appid);
+        if (game.has_community_visible_stats) {
+          await this.runTopAchievements(game.appid);
+        }
 
         processed++;
       }
@@ -49,6 +51,7 @@ export class SteamSync {
       });
     }
     catch (e) {
+      console.error(e);
       await this.syncs.fail(syncId, e as Error);
       throw e;
     }

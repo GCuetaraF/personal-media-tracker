@@ -106,8 +106,10 @@ export class SteamClient {
 
     const res = await fetch(`${url}?${params}`);
 
-    if (!res.ok)
-      throw new Error(`Steam API error: ${res.status}`);
+    if (!res.ok) {
+      console.warn(`Steam API error: ${res.status} for appid ${appid}`);
+      return [];
+    }
 
     const json = (await res.json()) as SteamAchievementSchemaResponse;
     return json.game?.availableGameStats?.achievements ?? [];

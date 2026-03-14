@@ -22,16 +22,19 @@ const serverSchema = z.object({
   RETROACHIEVEMENTS_API_KEY: z.string().min(1).optional(),
   RETROACHIEVEMENTS_USER_ID: z.string().min(1).optional(),
 
+  // TRAKT
+  TRAKT_CLIENT_ID: z.string().min(1).optional(),
+  TRAKT_USER_ID: z.string().min(1).optional(),
   // // HLTB
   // HLTB_USER: z.string().min(1),
   // HLTB_USER_ID: z.string().min(1),
 
-  // // MANGADEX
+  // MANGADEX
   // MANGADEX_FOLLOWS_LIST_ID: z.string().min(1),
-  // MANGADEX_USERNAME: z.string().min(1),
-  // MANGADEX_PASSWORD: z.string().min(1),
-  // MANGADEX_CLIENT_ID: z.string().min(1),
-  // MANGADEX_CLIENT_SECRET: z.string().min(1),
+  MANGADEX_USER_ID: z.string().min(1).optional(),
+  MANGADEX_PASSWORD: z.string().min(1).optional(),
+  MANGADEX_CLIENT_ID: z.string().min(1).optional(),
+  MANGADEX_CLIENT_SECRET: z.string().min(1).optional(),
 
   // Steam
   STEAM_API_KEY: z.string().min(1).optional(),
@@ -60,11 +63,10 @@ const {
   // SUPABASE_KEY,
   // HLTB_USER,
   // HLTB_USER_ID,
-  // MANGADEX_CLIENT_ID,
-  // MANGADEX_CLIENT_SECRET,
-  // MANGADEX_FOLLOWS_LIST_ID,
-  // MANGADEX_PASSWORD,
-  // MANGADEX_USERNAME,
+  MANGADEX_CLIENT_ID,
+  MANGADEX_CLIENT_SECRET,
+  MANGADEX_PASSWORD,
+  MANGADEX_USER_ID,
   YOUTUBE_API_KEY,
   YOUTUBE_PLAYLIST_ID,
   YOUTUBE_CLIENT_ID,
@@ -75,6 +77,8 @@ const {
   STEAMGRIDDB_API_KEY,
   RETROACHIEVEMENTS_API_KEY,
   RETROACHIEVEMENTS_USER_ID,
+  TRAKT_CLIENT_ID,
+  TRAKT_USER_ID
 } = _serverEnv.data;
 
 export const env = {
@@ -84,11 +88,10 @@ export const env = {
   // SUPABASE_KEY,
   // HLTB_USER,
   // HLTB_USER_ID,
-  // MANGADEX_CLIENT_ID,
-  // MANGADEX_CLIENT_SECRET,
-  // MANGADEX_FOLLOWS_LIST_ID,
-  // MANGADEX_PASSWORD,
-  // MANGADEX_USERNAME,
+  MANGADEX_CLIENT_ID,
+  MANGADEX_CLIENT_SECRET,
+  MANGADEX_PASSWORD,
+  MANGADEX_USER_ID,
   YOUTUBE_PLAYLIST_ID,
   YOUTUBE_API_KEY,
   YOUTUBE_CLIENT_ID,
@@ -99,6 +102,8 @@ export const env = {
   STEAMGRIDDB_API_KEY,
   RETROACHIEVEMENTS_API_KEY,
   RETROACHIEVEMENTS_USER_ID,
+  TRAKT_CLIENT_ID,
+  TRAKT_USER_ID
 };
 // eslint-disable-next-line no-console
 console.log("✅ Environment variables loaded");
