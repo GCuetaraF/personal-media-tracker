@@ -68,5 +68,6 @@ export interface MangaDexNormalizedManga {
     description?: string;
     lastChapter?: string | null;
     year?: number;
+    contentRating?: string;
   }
 }

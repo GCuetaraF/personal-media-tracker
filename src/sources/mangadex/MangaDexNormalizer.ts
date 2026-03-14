@@ -12,7 +12,8 @@ export class MangaDexNormalizer {
       metadata: {
         description: manga.attributes.description?.en ?? manga.attributes.description?.jp ?? manga.attributes.description?.es,
         lastChapter: manga.attributes.lastChapter,
-        year: manga.attributes.year
+        year: manga.attributes.year,
+        contentRating: manga.attributes.contentRating
       }
     }
   }
