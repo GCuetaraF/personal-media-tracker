@@ -3,7 +3,8 @@ export type EntityKind
   | GameEntityKind
   | MusicEntityKind
   | MediaEntityKind
-  | BookEntityKind;
+  | BookEntityKind
+  | BlogEntityKind;
 
 export type VideoEntityKind = "video" | "playlist" | "subscription";
 
@@ -14,3 +15,5 @@ export type MusicEntityKind = "album" | "song";
 export type MediaEntityKind = "movie" | "show" | "season" | "episode";
 
 export type BookEntityKind = "book" | "comic" | "manga" | "chapter";
+
+export type BlogEntityKind = "blog" | "blog_post"

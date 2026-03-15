@@ -1,0 +1,124 @@
+import type {
+  FreshRSSStreamResponse,
+  FreshRSSSubscription,
+  FreshRSSSubscriptionListResponse,
+  FreshRSSItem,
+} from "./types";
+
+export class FreshRSSClient {
+  constructor(
+    private userId: string,
+    private apiPassword: string,
+  ) { }
+
+  private base = "https://rss.32bit.cafe/api/greader.php";
+  private blogsLabel = "user/-/label/Blogs";
+
+  private authToken?: string;
+
+  async fetchFollowingBlogs(): Promise<FreshRSSSubscription[]> {
+    const auth = await this.getAuthToken();
+
+    const url =
+      `${this.base}/reader/api/0/subscription/list?output=json`;
+
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `GoogleLogin auth=${auth}`,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`FreshRSS API Error: ${res.status}`);
+    }
+
+    const json =
+      (await res.json()) as FreshRSSSubscriptionListResponse;
+
+    const subscriptions = json.subscriptions ?? [];
+
+    return subscriptions.filter((sub) =>
+      sub.categories?.some((c) => c.id === this.blogsLabel),
+    );
+  }
+
+  async fetchFavouriteBlogPosts(
+    blogs: FreshRSSSubscription[],
+    updatedAfter?: number,
+  ): Promise<FreshRSSItem[]> {
+    const auth = await this.getAuthToken();
+
+    const blogIds = new Set(blogs.map((b) => b.id));
+
+    let continuation: string | undefined;
+    const posts: FreshRSSItem[] = [];
+
+    do {
+      const url = new URL(
+        `${this.base}/reader/api/0/stream/contents/user/-/state/com.google/starred`,
+      );
+
+      url.searchParams.set("n", "100");
+
+      if (continuation) {
+        url.searchParams.set("continuation", continuation);
+      }
+
+      const res = await fetch(url.toString(), {
+        headers: {
+          Authorization: `GoogleLogin auth=${auth}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`FreshRSS API Error: ${res.status}`);
+      }
+
+      const json = (await res.json()) as FreshRSSStreamResponse;
+
+      const items = json.items ?? [];
+
+      for (const item of items) {
+        const streamId = item.origin?.streamId;
+
+        if (!streamId || !blogIds.has(streamId)) continue;
+
+        if (updatedAfter && item.published <= updatedAfter) continue;
+
+        posts.push(item);
+      }
+
+      continuation = json.continuation;
+    } while (continuation);
+
+    return posts;
+  }
+
+  private async getAuthToken(): Promise<string> {
+    if (this.authToken) return this.authToken;
+
+    const res = await fetch(`${this.base}/accounts/ClientLogin`, {
+      method: "POST",
+      body: new URLSearchParams({
+        Email: this.userId,
+        Passwd: this.apiPassword,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`FreshRSS login failed: ${res.status}`);
+    }
+
+    const text = await res.text();
+
+    const match = text.match(/Auth=(.*)/);
+
+    if (!match) {
+      throw new Error("FreshRSS auth token missing");
+    }
+
+    this.authToken = match[1]?.trim();
+
+    return this.authToken ?? "";
+  }
+}

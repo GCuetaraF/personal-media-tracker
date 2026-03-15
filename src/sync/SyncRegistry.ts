@@ -21,6 +21,9 @@ import { TraktSync } from "@/sources/trakt/TraktSync";
 import { MangaDexClient } from "@/sources/mangadex/MangaDexClient";
 import { MangaDexNormalizer } from "@/sources/mangadex/MangaDexNormalizer";
 import { MangaDexSync } from "@/sources/mangadex/MangaDexSync";
+import { FreshRSSClient } from "@/sources/freshrss/FreshRSSClient";
+import { FreshRSSNormalizer } from "@/sources/freshrss/FreshRSSNormalizer";
+import { FreshRSSSync } from "@/sources/freshrss/FreshRSSSync";
 
 export const syncRegistry: Record<string, () => Promise<{ run: () => Promise<void> }>> = {
   steam: async () => {
@@ -100,7 +103,7 @@ export const syncRegistry: Record<string, () => Promise<{ run: () => Promise<voi
     const clientSecret = env.MANGADEX_CLIENT_SECRET;
 
     if (!userId || !password || !clientId || !clientSecret) {
-      throw new Error("Missing MANGADEX_USER_ID, MANGADEX_PASSWORD, MANGADEX_CLIENT_ID or MANGADEX_CLIENT_SECRET");
+      throw new Error("Missing MANGADEX_USER_ID, MANGADEX_PASSWORD, MANGADEX_CLIENT_ID or MANGADEX_CLIENT_SECRET in .env");
     }
 
     const client = new MangaDexClient(userId, password, clientId, clientSecret);
@@ -111,5 +114,22 @@ export const syncRegistry: Record<string, () => Promise<{ run: () => Promise<voi
     const syncs = new SourceSyncRepository(db);
 
     return new MangaDexSync(client, normalizer, entities, metadata, relationships, syncs)
+  },
+  freshrss: async () => {
+    const userName = env.FRESHRSS_USER_NAME;
+    const apiPassword = env.FRESHRSS_API_PASSWORD;
+
+    if (!userName || !apiPassword) {
+      throw new Error("Missing FRESHRSS_USER_NAME or FRESHRSS_API_PASSWORD  in .env")
+    }
+
+    const client = new FreshRSSClient(userName, apiPassword);
+    const normalizer = new FreshRSSNormalizer();
+    const entities = new EntityRepository(db);
+    const metadata = new MetadataRepository(db);
+    const relationships = new RelationshipRepository(db);
+    const syncs = new SourceSyncRepository(db);
+
+    return new FreshRSSSync(client, normalizer, entities, metadata, relationships, syncs);
   }
 };

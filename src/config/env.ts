@@ -7,7 +7,7 @@ dotenv.config({ path: ".env.local" });
 console.log("🔐 Loading environment variables...");
 
 const serverSchema = z.object({
-  // Supabase
+  // SUPABASE
   SUPABASE_URL: z.string().min(1),
   SUPABASE_SERVICE_ROLE: z.string().min(1),
 
@@ -25,23 +25,24 @@ const serverSchema = z.object({
   // TRAKT
   TRAKT_CLIENT_ID: z.string().min(1).optional(),
   TRAKT_USER_ID: z.string().min(1).optional(),
-  // // HLTB
-  // HLTB_USER: z.string().min(1),
-  // HLTB_USER_ID: z.string().min(1),
 
   // MANGADEX
-  // MANGADEX_FOLLOWS_LIST_ID: z.string().min(1),
   MANGADEX_USER_ID: z.string().min(1).optional(),
   MANGADEX_PASSWORD: z.string().min(1).optional(),
   MANGADEX_CLIENT_ID: z.string().min(1).optional(),
   MANGADEX_CLIENT_SECRET: z.string().min(1).optional(),
 
-  // Steam
+  // STEAM
   STEAM_API_KEY: z.string().min(1).optional(),
   STEAM_ID: z.string().min(1).optional(),
 
   // SteamGridDB
   STEAMGRIDDB_API_KEY: z.string().min(1).optional(),
+
+  // FRESRSS
+  FRESHRSS_USER_NAME: z.string().min(1).optional(),
+  FRESHRSS_API_PASSWORD: z.string().min(1).optional(),
+  FRESHRSS_CATEGORY_NAME: z.string().min(1).optional()
 
 });
 
@@ -57,12 +58,8 @@ if (!_serverEnv.success) {
 }
 
 const {
-  // NODE_ENV,
   SUPABASE_SERVICE_ROLE,
   SUPABASE_URL,
-  // SUPABASE_KEY,
-  // HLTB_USER,
-  // HLTB_USER_ID,
   MANGADEX_CLIENT_ID,
   MANGADEX_CLIENT_SECRET,
   MANGADEX_PASSWORD,
@@ -78,16 +75,15 @@ const {
   RETROACHIEVEMENTS_API_KEY,
   RETROACHIEVEMENTS_USER_ID,
   TRAKT_CLIENT_ID,
-  TRAKT_USER_ID
+  TRAKT_USER_ID,
+  FRESHRSS_USER_NAME,
+  FRESHRSS_API_PASSWORD,
+  FRESHRSS_CATEGORY_NAME
 } = _serverEnv.data;
 
 export const env = {
-  // NODE_ENV,
   SUPABASE_SERVICE_ROLE,
   SUPABASE_URL,
-  // SUPABASE_KEY,
-  // HLTB_USER,
-  // HLTB_USER_ID,
   MANGADEX_CLIENT_ID,
   MANGADEX_CLIENT_SECRET,
   MANGADEX_PASSWORD,
@@ -103,7 +99,11 @@ export const env = {
   RETROACHIEVEMENTS_API_KEY,
   RETROACHIEVEMENTS_USER_ID,
   TRAKT_CLIENT_ID,
-  TRAKT_USER_ID
+  TRAKT_USER_ID,
+  FRESHRSS_API_PASSWORD,
+  FRESHRSS_USER_NAME,
+  FRESHRSS_CATEGORY_NAME
 };
+
 // eslint-disable-next-line no-console
 console.log("✅ Environment variables loaded");
