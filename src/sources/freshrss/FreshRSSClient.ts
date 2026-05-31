@@ -1,8 +1,8 @@
 import type {
+  FreshRSSItem,
   FreshRSSStreamResponse,
   FreshRSSSubscription,
   FreshRSSSubscriptionListResponse,
-  FreshRSSItem,
 } from "./types";
 
 export class FreshRSSClient {
@@ -19,8 +19,8 @@ export class FreshRSSClient {
   async fetchFollowingBlogs(): Promise<FreshRSSSubscription[]> {
     const auth = await this.getAuthToken();
 
-    const url =
-      `${this.base}/reader/api/0/subscription/list?output=json`;
+    const url
+      = `${this.base}/reader/api/0/subscription/list?output=json`;
 
     const res = await fetch(url, {
       headers: {
@@ -32,13 +32,13 @@ export class FreshRSSClient {
       throw new Error(`FreshRSS API Error: ${res.status}`);
     }
 
-    const json =
-      (await res.json()) as FreshRSSSubscriptionListResponse;
+    const json
+      = (await res.json()) as FreshRSSSubscriptionListResponse;
 
     const subscriptions = json.subscriptions ?? [];
 
-    return subscriptions.filter((sub) =>
-      sub.categories?.some((c) => c.id === this.blogsLabel),
+    return subscriptions.filter(sub =>
+      sub.categories?.some(c => c.id === this.blogsLabel),
     );
   }
 
@@ -48,7 +48,7 @@ export class FreshRSSClient {
   ): Promise<FreshRSSItem[]> {
     const auth = await this.getAuthToken();
 
-    const blogIds = new Set(blogs.map((b) => b.id));
+    const blogIds = new Set(blogs.map(b => b.id));
 
     let continuation: string | undefined;
     const posts: FreshRSSItem[] = [];
@@ -81,9 +81,11 @@ export class FreshRSSClient {
       for (const item of items) {
         const streamId = item.origin?.streamId;
 
-        if (!streamId || !blogIds.has(streamId)) continue;
+        if (!streamId || !blogIds.has(streamId))
+          continue;
 
-        if (updatedAfter && item.published <= updatedAfter) continue;
+        if (updatedAfter && item.published <= updatedAfter)
+          continue;
 
         posts.push(item);
       }
@@ -95,7 +97,8 @@ export class FreshRSSClient {
   }
 
   private async getAuthToken(): Promise<string> {
-    if (this.authToken) return this.authToken;
+    if (this.authToken)
+      return this.authToken;
 
     const res = await fetch(`${this.base}/accounts/ClientLogin`, {
       method: "POST",

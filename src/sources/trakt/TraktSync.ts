@@ -1,9 +1,10 @@
 import type { EntityRepository } from "@/repositories/EntityRepository";
-import type { TraktClient } from "./TraktClient";
-import type { TraktNormalizer } from "./TraktNormalizer";
 import type { MetadataRepository } from "@/repositories/MetadataRepository";
 import type { RelationshipRepository } from "@/repositories/RelationshipRepository";
 import type { SourceSyncRepository } from "@/repositories/SourceSyncRepository";
+
+import type { TraktClient } from "./TraktClient";
+import type { TraktNormalizer } from "./TraktNormalizer";
 
 export class TraktSync {
   constructor(
@@ -12,12 +13,14 @@ export class TraktSync {
     private entities: EntityRepository,
     private metadata: MetadataRepository,
     private relationships: RelationshipRepository,
-    private syncs: SourceSyncRepository
+    private syncs: SourceSyncRepository,
   ) { }
 
   async run() {
     await this.runFavoriteShows();
     await this.runWatchlistShows();
+    await this.runFavoriteMovies();
+    await this.runWatchlistMovies();
   }
 
   async runFavoriteShows() {
@@ -35,7 +38,7 @@ export class TraktSync {
           kind: normalized.kind,
           title: normalized.title,
           source: normalized.source,
-          externalId: normalized.externalId
+          externalId: normalized.externalId,
         });
 
         await this.metadata.upsert(entityId, { ...normalized.metadata, status: "favorite" });
@@ -44,9 +47,10 @@ export class TraktSync {
       }
 
       await this.syncs.success(syncId, {
-        shows_processed: processed
-      })
-    } catch (e) {
+        shows_processed: processed,
+      });
+    }
+    catch (e) {
       await this.syncs.fail(syncId, e as Error);
       throw e;
     }
@@ -67,7 +71,7 @@ export class TraktSync {
           kind: normalized.kind,
           title: normalized.title,
           source: normalized.source,
-          externalId: normalized.externalId
+          externalId: normalized.externalId,
         });
 
         await this.metadata.upsert(entityId, { ...normalized.metadata, status: "watchlist" });
@@ -76,9 +80,76 @@ export class TraktSync {
       }
 
       await this.syncs.success(syncId, {
-        shows_processed: processed
-      })
-    } catch (e) {
+        shows_processed: processed,
+      });
+    }
+    catch (e) {
+      await this.syncs.fail(syncId, e as Error);
+      throw e;
+    }
+  }
+
+  async runFavoriteMovies() {
+    const syncId = await this.syncs.start("trakt_favorite_movies");
+
+    try {
+      const movies = await this.client.fetchFavoriteMovies();
+
+      let processed = 0;
+
+      for (const movie of movies) {
+        const normalized = this.normalizer.normalizeFavoriteMovie(movie);
+
+        const { entityId } = await this.entities.getOrCreateFromSource({
+          kind: normalized.kind,
+          title: normalized.title,
+          source: normalized.source,
+          externalId: normalized.externalId,
+        });
+
+        await this.metadata.upsert(entityId, { ...normalized.metadata, status: "favorite" });
+
+        processed++;
+      }
+
+      await this.syncs.success(syncId, {
+        movies_processed: processed,
+      });
+    }
+    catch (e) {
+      await this.syncs.fail(syncId, e as Error);
+      throw e;
+    }
+  }
+
+  async runWatchlistMovies() {
+    const syncId = await this.syncs.start("trakt_watchlist_movies");
+
+    try {
+      const movies = await this.client.fetchWatchlistMovies();
+
+      let processed = 0;
+
+      for (const movie of movies) {
+        const normalized = this.normalizer.normalizeWatchlistMovie(movie);
+
+        const { entityId } = await this.entities.getOrCreateFromSource({
+          kind: normalized.kind,
+          title: normalized.title,
+          source: normalized.source,
+          externalId: normalized.externalId,
+        });
+
+        await this.metadata.upsert(entityId, { ...normalized.metadata, status: "watchlist" });
+
+        processed++;
+      }
+
+      await this.syncs.success(syncId, {
+        movies_processed: processed,
+      });
+    }
+    catch (e) {
       await this.syncs.fail(syncId, e as Error);
       throw e;
     }

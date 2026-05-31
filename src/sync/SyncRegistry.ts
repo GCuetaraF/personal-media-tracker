@@ -1,10 +1,19 @@
 import { env } from "@/config/env";
 import { db } from "@/db/supabase";
+import { FreshRSSClient } from "@/sources/freshrss/FreshRSSClient";
+import { FreshRSSNormalizer } from "@/sources/freshrss/FreshRSSNormalizer";
+import { FreshRSSSync } from "@/sources/freshrss/FreshRSSSync";
+import { MangaDexClient } from "@/sources/mangadex/MangaDexClient";
+import { MangaDexNormalizer } from "@/sources/mangadex/MangaDexNormalizer";
+import { MangaDexSync } from "@/sources/mangadex/MangaDexSync";
 import { RetroachievementsClient } from "@/sources/retroachievements/RetroachievementsClient";
 import { RetroachievementsNormalizer } from "@/sources/retroachievements/RetroachievementsNormalizer";
 import { RetroachievementsSync } from "@/sources/retroachievements/RetroachievementsSync";
 import { SteamClient } from "@/sources/steam/SteamClient";
 import { SteamNormalizer } from "@/sources/steam/SteamNormalizer";
+import { TraktClient } from "@/sources/trakt/TraktClient";
+import { TraktNormalizer } from "@/sources/trakt/TraktNormalizer";
+import { TraktSync } from "@/sources/trakt/TraktSync";
 import { YouTubeClient } from "@/sources/youtube/YouTubeClient";
 import { YouTubeNormalizer } from "@/sources/youtube/YouTubeNormalizer";
 import { YouTubeSync } from "@/sources/youtube/YouTubeSync";
@@ -15,15 +24,6 @@ import { RelationshipRepository } from "../repositories/RelationshipRepository";
 import { SourceSyncRepository } from "../repositories/SourceSyncRepository";
 import { TimeRepository } from "../repositories/TimeRepository";
 import { SteamSync } from "../sources/steam/SteamSync";
-import { TraktClient } from "@/sources/trakt/TraktClient";
-import { TraktNormalizer } from "@/sources/trakt/TraktNormalizer";
-import { TraktSync } from "@/sources/trakt/TraktSync";
-import { MangaDexClient } from "@/sources/mangadex/MangaDexClient";
-import { MangaDexNormalizer } from "@/sources/mangadex/MangaDexNormalizer";
-import { MangaDexSync } from "@/sources/mangadex/MangaDexSync";
-import { FreshRSSClient } from "@/sources/freshrss/FreshRSSClient";
-import { FreshRSSNormalizer } from "@/sources/freshrss/FreshRSSNormalizer";
-import { FreshRSSSync } from "@/sources/freshrss/FreshRSSSync";
 
 export const syncRegistry: Record<string, () => Promise<{ run: () => Promise<void> }>> = {
   steam: async () => {
@@ -90,7 +90,7 @@ export const syncRegistry: Record<string, () => Promise<{ run: () => Promise<voi
     const client = new TraktClient(clientId, userId);
     const normalizer = new TraktNormalizer();
     const entities = new EntityRepository(db);
-    const metadata = new MetadataRepository(db)
+    const metadata = new MetadataRepository(db);
     const relationships = new RelationshipRepository(db);
     const syncs = new SourceSyncRepository(db);
 
@@ -113,14 +113,14 @@ export const syncRegistry: Record<string, () => Promise<{ run: () => Promise<voi
     const relationships = new RelationshipRepository(db);
     const syncs = new SourceSyncRepository(db);
 
-    return new MangaDexSync(client, normalizer, entities, metadata, relationships, syncs)
+    return new MangaDexSync(client, normalizer, entities, metadata, relationships, syncs);
   },
   freshrss: async () => {
     const userName = env.FRESHRSS_USER_NAME;
     const apiPassword = env.FRESHRSS_API_PASSWORD;
 
     if (!userName || !apiPassword) {
-      throw new Error("Missing FRESHRSS_USER_NAME or FRESHRSS_API_PASSWORD  in .env")
+      throw new Error("Missing FRESHRSS_USER_NAME or FRESHRSS_API_PASSWORD  in .env");
     }
 
     const client = new FreshRSSClient(userName, apiPassword);
@@ -131,5 +131,5 @@ export const syncRegistry: Record<string, () => Promise<{ run: () => Promise<voi
     const syncs = new SourceSyncRepository(db);
 
     return new FreshRSSSync(client, normalizer, entities, metadata, relationships, syncs);
-  }
+  },
 };

@@ -1,61 +1,61 @@
 export interface MangaDexCollectionResponse<T> {
-  result: "ok" | "error"
-  response: "collection"
-  data: T[]
-  limit: number
-  offset: number
-  total: number
+  result: "ok" | "error";
+  response: "collection";
+  data: T[];
+  limit: number;
+  offset: number;
+  total: number;
 }
 
-export type MangaDexFollowedMangaResponse =
-  MangaDexCollectionResponse<MangaDexManga>
+export type MangaDexFollowedMangaResponse
+  = MangaDexCollectionResponse<MangaDexManga>;
 
 export interface MangaDexManga {
-  id: string
-  type: "manga"
-  attributes: MangaDexMangaAttributes
-  relationships: MangaDexRelationship[]
+  id: string;
+  type: "manga";
+  attributes: MangaDexMangaAttributes;
+  relationships: MangaDexRelationship[];
 }
 
 export interface MangaDexMangaAttributes {
-  title: Record<string, string>
-  altTitles: Record<string, string>[]
-  description?: Record<string, string>
+  title: Record<string, string>;
+  altTitles: Record<string, string>[];
+  description?: Record<string, string>;
 
-  isLocked: boolean
-  links?: Record<string, string>
+  isLocked: boolean;
+  links?: Record<string, string>;
 
-  originalLanguage: string
-  lastVolume?: string | null
-  lastChapter?: string | null
+  originalLanguage: string;
+  lastVolume?: string | null;
+  lastChapter?: string | null;
 
-  publicationDemographic?: string
-  status?: string
-  year?: number
+  publicationDemographic?: string;
+  status?: string;
+  year?: number;
 
-  contentRating?: string
+  contentRating?: string;
 
-  tags?: MangaDexTag[]
+  tags?: MangaDexTag[];
 
-  state: string
-  version: number
+  state: string;
+  version: number;
 
-  createdAt: string
-  updatedAt: string
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface MangaDexTag {
-  id: string
-  type: "tag"
+  id: string;
+  type: "tag";
   attributes: {
-    name: Record<string, string>
-    group: string
-  }
+    name: Record<string, string>;
+    group: string;
+  };
 }
 
 export interface MangaDexRelationship {
-  id: string
-  type: "author" | "artist" | "cover_art" | string
+  id: string;
+  type: "author" | "artist" | "cover_art" | string;
 }
 
 export interface MangaDexNormalizedManga {
@@ -69,5 +69,5 @@ export interface MangaDexNormalizedManga {
     lastChapter?: string | null;
     year?: number;
     contentRating?: string;
-  }
+  };
 }

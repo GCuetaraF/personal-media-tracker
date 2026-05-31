@@ -2,7 +2,7 @@ name: Scheduled Media Sync
 
 on:
   schedule:
-    - cron: '0 0 */15 * *'
+    - cron: "0 0 */15 * *"
   workflow_dispatch:
 
 jobs:
@@ -27,7 +27,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: npm ci

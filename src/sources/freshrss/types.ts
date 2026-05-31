@@ -12,7 +12,6 @@ export interface FreshRSSItem {
   author?: string;
 }
 
-
 export interface FreshRSSStreamResponse {
   id: string;
   updated: number;
@@ -71,8 +70,8 @@ export interface FreshRSSNormalizedFeedItem {
     feedId?: string;
     feedTitle?: string;
     summary?: string;
-    categories?: string[]
-  }
+    categories?: string[];
+  };
 }
 
 export interface FreshRSSNormalizedFeed {
@@ -85,5 +84,5 @@ export interface FreshRSSNormalizedFeed {
   metadata: {
     url?: string;
     categories?: string[];
-  }
+  };
 }

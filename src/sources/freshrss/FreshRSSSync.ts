@@ -1,10 +1,10 @@
 import type { EntityRepository } from "@/repositories/EntityRepository";
-import type { FreshRSSClient } from "./FreshRSSClient";
-import type { FreshRSSNormalizer } from "./FreshRSSNormalizer";
 import type { MetadataRepository } from "@/repositories/MetadataRepository";
 import type { RelationshipRepository } from "@/repositories/RelationshipRepository";
 import type { SourceSyncRepository } from "@/repositories/SourceSyncRepository";
 
+import type { FreshRSSClient } from "./FreshRSSClient";
+import type { FreshRSSNormalizer } from "./FreshRSSNormalizer";
 import type { FreshRSSSubscription } from "./types";
 
 export class FreshRSSSync {
@@ -14,7 +14,7 @@ export class FreshRSSSync {
     private entities: EntityRepository,
     private metadata: MetadataRepository,
     private relationships: RelationshipRepository,
-    private syncs: SourceSyncRepository
+    private syncs: SourceSyncRepository,
   ) { }
 
   async run() {
@@ -61,24 +61,24 @@ export class FreshRSSSync {
     const syncId = await this.syncs.start("freshrss_blog_posts");
 
     try {
-      const latestPostDateStr =
-        await this.entities.getLatestCreatedAt("blog_post");
+      const latestPostDateStr
+        = await this.entities.getLatestCreatedAt("blog_post");
 
       let updatedAfter: number | undefined;
 
       if (latestPostDateStr) {
         updatedAfter = Math.floor(
-          new Date(latestPostDateStr).getTime() / 1000
+          new Date(latestPostDateStr).getTime() / 1000,
         );
       }
 
       const posts = await this.client.fetchFavouriteBlogPosts(
         blogs,
-        updatedAfter
+        updatedAfter,
       );
 
       const blogMap = new Map(
-        blogs.map((b) => [b.id, b.title])
+        blogs.map(b => [b.id, b.title]),
       );
 
       let processed = 0;
@@ -86,8 +86,8 @@ export class FreshRSSSync {
       for (const post of posts) {
         const normalized = this.normalizer.normalizeBlogPost(post);
 
-        const { entityId: postEntityId } =
-          await this.entities.getOrCreateFromSource({
+        const { entityId: postEntityId }
+          = await this.entities.getOrCreateFromSource({
             kind: normalized.kind,
             title: normalized.title,
             source: normalized.source,
@@ -96,18 +96,17 @@ export class FreshRSSSync {
 
         await this.metadata.upsert(
           postEntityId,
-          normalized.metadata
+          normalized.metadata,
         );
 
         const blogExternalId = normalized.metadata.feedId;
 
         if (blogExternalId) {
-
           const blogTitle = blogMap.get(blogExternalId);
 
           if (blogExternalId && blogTitle) {
-            const { entityId: blogEntityId } =
-              await this.entities.getOrCreateFromSource({
+            const { entityId: blogEntityId }
+              = await this.entities.getOrCreateFromSource({
                 kind: "blog",
                 title: blogTitle,
                 source: normalized.source,

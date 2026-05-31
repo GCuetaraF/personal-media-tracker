@@ -5,7 +5,7 @@ export class MangaDexClient {
     private userId: string,
     private password: string,
     private clientId: string,
-    private clientSecret: string
+    private clientSecret: string,
   ) { }
 
   async fetchFollowedManga(): Promise<MangaDexManga[]> {
@@ -17,7 +17,7 @@ export class MangaDexClient {
     let offset = 0;
     let hasMore = true;
 
-    const allData: MangaDexManga[] = []
+    const allData: MangaDexManga[] = [];
 
     while (hasMore) {
       const params = new URLSearchParams({
@@ -55,26 +55,27 @@ export class MangaDexClient {
       username: this.userId,
       password: this.password,
       client_id: this.clientId,
-      client_secret: this.clientSecret
-    }
+      client_secret: this.clientSecret,
+    };
 
     const body = new URLSearchParams(credentials);
 
     const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body
+      body,
     });
 
     const json = (await response.json()) as { access_token: string };
 
-    if (!response) throw new Error("Error authenticating Mangadex")
+    if (!response)
+      throw new Error("Error authenticating Mangadex");
 
     return {
-      Accept: "application/json",
+      "Accept": "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${json.access_token}`,
-      "Connection": "keep-alive"
+      "Authorization": `Bearer ${json.access_token}`,
+      "Connection": "keep-alive",
     };
   }
 }

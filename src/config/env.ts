@@ -42,7 +42,7 @@ const serverSchema = z.object({
   // FRESRSS
   FRESHRSS_USER_NAME: z.string().min(1).optional(),
   FRESHRSS_API_PASSWORD: z.string().min(1).optional(),
-  FRESHRSS_CATEGORY_NAME: z.string().min(1).optional()
+  FRESHRSS_CATEGORY_NAME: z.string().min(1).optional(),
 
 });
 
@@ -78,7 +78,7 @@ const {
   TRAKT_USER_ID,
   FRESHRSS_USER_NAME,
   FRESHRSS_API_PASSWORD,
-  FRESHRSS_CATEGORY_NAME
+  FRESHRSS_CATEGORY_NAME,
 } = _serverEnv.data;
 
 export const env = {
@@ -102,7 +102,7 @@ export const env = {
   TRAKT_USER_ID,
   FRESHRSS_API_PASSWORD,
   FRESHRSS_USER_NAME,
-  FRESHRSS_CATEGORY_NAME
+  FRESHRSS_CATEGORY_NAME,
 };
 
 // eslint-disable-next-line no-console

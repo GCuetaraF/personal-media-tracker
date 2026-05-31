@@ -13,9 +13,9 @@ export class MangaDexNormalizer {
         description: manga.attributes.description?.en ?? manga.attributes.description?.jp ?? manga.attributes.description?.es,
         lastChapter: manga.attributes.lastChapter,
         year: manga.attributes.year,
-        contentRating: manga.attributes.contentRating
-      }
-    }
+        contentRating: manga.attributes.contentRating,
+      },
+    };
   }
 
   private getBestTitle(manga: MangaDexManga) {
@@ -26,30 +26,34 @@ export class MangaDexNormalizer {
 
     if (title) {
       for (const lang of langPriority) {
-        if (title[lang]) return title[lang]
+        if (title[lang])
+          return title[lang];
       }
     }
 
     if (altTitles) {
       for (const lang of langPriority) {
         for (const alt of altTitles) {
-          if (alt[lang]) return alt[lang]
+          if (alt[lang])
+            return alt[lang];
         }
       }
     }
 
     if (title) {
-      const first = Object.values(title)[0]
-      if (first) return first
+      const first = Object.values(title)[0];
+      if (first)
+        return first;
     }
 
     if (altTitles) {
       for (const alt of altTitles) {
-        const first = Object.values(alt)[0]
-        if (first) return first
+        const first = Object.values(alt)[0];
+        if (first)
+          return first;
       }
     }
 
-    return "Unknown title"
+    return "Unknown title";
   }
 }

@@ -32,9 +32,9 @@ export default antfu(
             camelCase: true,
             pascalCase: true,
           },
-          ignore: ["md", "eslint.config.mjs"],
+          ignore: ["md", "eslint.config.mjs", "^scheduled-.*\\.yml$"],
         },
       ],
     },
-  }
+  },
 );

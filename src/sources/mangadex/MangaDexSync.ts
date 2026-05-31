@@ -1,9 +1,10 @@
 import type { EntityRepository } from "@/repositories/EntityRepository";
-import type { MangaDexClient } from "./MangaDexClient";
-import type { MangaDexNormalizer } from "./MangaDexNormalizer";
 import type { MetadataRepository } from "@/repositories/MetadataRepository";
 import type { RelationshipRepository } from "@/repositories/RelationshipRepository";
 import type { SourceSyncRepository } from "@/repositories/SourceSyncRepository";
+
+import type { MangaDexClient } from "./MangaDexClient";
+import type { MangaDexNormalizer } from "./MangaDexNormalizer";
 
 export class MangaDexSync {
   constructor(
@@ -12,7 +13,7 @@ export class MangaDexSync {
     private entities: EntityRepository,
     private metadata: MetadataRepository,
     private relationships: RelationshipRepository,
-    private syncs: SourceSyncRepository
+    private syncs: SourceSyncRepository,
   ) { }
 
   async run() {
@@ -30,7 +31,7 @@ export class MangaDexSync {
           kind: normalized.kind,
           title: normalized.title,
           source: normalized.source,
-          externalId: normalized.externalId
+          externalId: normalized.externalId,
         });
 
         await this.metadata.upsert(entityId, normalized.metadata);
@@ -39,9 +40,10 @@ export class MangaDexSync {
       }
 
       await this.syncs.success(syncId, {
-        manga_processed: processed
-      })
-    } catch (e) {
+        manga_processed: processed,
+      });
+    }
+    catch (e) {
       await this.syncs.fail(syncId, e as Error);
       throw e;
     }
