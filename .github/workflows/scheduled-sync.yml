@@ -43,12 +43,3 @@ jobs:
 
       - name: Run YouTube sync
         run: npm start -- youtube
-
-      - name: Run Trakt sync
-        run: npm start -- trakt
-
-      - name: Run Mangadex sync
-        run: npm start -- mangadex
-
-      - name: Run FreshRSS sync
-        run: npm start -- freshrss
