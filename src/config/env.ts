@@ -6,43 +6,45 @@ dotenv.config({ path: ".env.local" });
 // eslint-disable-next-line no-console
 console.log("🔐 Loading environment variables...");
 
+const envValue = z.preprocess(value => typeof value === "string" ? value.trim() : value, z.string().min(1));
+
 const serverSchema = z.object({
   // SUPABASE
-  SUPABASE_URL: z.string().min(1),
-  SUPABASE_SERVICE_ROLE: z.string().min(1),
+  SUPABASE_URL: envValue,
+  SUPABASE_SERVICE_ROLE: envValue,
 
   // YOUTUBE
-  YOUTUBE_PLAYLIST_ID: z.string().min(1),
-  YOUTUBE_CLIENT_ID: z.string().min(1),
-  YOUTUBE_API_KEY: z.string().min(1),
-  YOUTUBE_CLIENT_SECRET: z.string().min(1),
-  YOUTUBE_REFRESH_TOKEN: z.string().min(1),
+  YOUTUBE_PLAYLIST_ID: envValue,
+  YOUTUBE_CLIENT_ID: envValue,
+  YOUTUBE_API_KEY: envValue,
+  YOUTUBE_CLIENT_SECRET: envValue,
+  YOUTUBE_REFRESH_TOKEN: envValue,
 
   // RETROACHIEVEMENTS
-  RETROACHIEVEMENTS_API_KEY: z.string().min(1).optional(),
-  RETROACHIEVEMENTS_USER_ID: z.string().min(1).optional(),
+  RETROACHIEVEMENTS_API_KEY: envValue.optional(),
+  RETROACHIEVEMENTS_USER_ID: envValue.optional(),
 
   // TRAKT
-  TRAKT_CLIENT_ID: z.string().min(1).optional(),
-  TRAKT_USER_ID: z.string().min(1).optional(),
+  TRAKT_CLIENT_ID: envValue.optional(),
+  TRAKT_USER_ID: envValue.optional(),
 
   // MANGADEX
-  MANGADEX_USER_ID: z.string().min(1).optional(),
-  MANGADEX_PASSWORD: z.string().min(1).optional(),
-  MANGADEX_CLIENT_ID: z.string().min(1).optional(),
-  MANGADEX_CLIENT_SECRET: z.string().min(1).optional(),
+  MANGADEX_USER_ID: envValue.optional(),
+  MANGADEX_PASSWORD: envValue.optional(),
+  MANGADEX_CLIENT_ID: envValue.optional(),
+  MANGADEX_CLIENT_SECRET: envValue.optional(),
 
   // STEAM
-  STEAM_API_KEY: z.string().min(1).optional(),
-  STEAM_ID: z.string().min(1).optional(),
+  STEAM_API_KEY: envValue.optional(),
+  STEAM_ID: envValue.optional(),
 
   // SteamGridDB
-  STEAMGRIDDB_API_KEY: z.string().min(1).optional(),
+  STEAMGRIDDB_API_KEY: envValue.optional(),
 
   // FRESRSS
-  FRESHRSS_USER_NAME: z.string().min(1).optional(),
-  FRESHRSS_API_PASSWORD: z.string().min(1).optional(),
-  FRESHRSS_CATEGORY_NAME: z.string().min(1).optional(),
+  FRESHRSS_USER_NAME: envValue.optional(),
+  FRESHRSS_API_PASSWORD: envValue.optional(),
+  FRESHRSS_CATEGORY_NAME: envValue.optional(),
 
 });
 

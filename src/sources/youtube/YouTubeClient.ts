@@ -155,7 +155,16 @@ export class YouTubeClient {
     const oAuth2Client = new OAuth2Client(this.clientId, this.clientSecret);
     oAuth2Client.setCredentials({ refresh_token: this.refreshToken });
 
-    const { token } = await oAuth2Client.getAccessToken();
+    const { token } = await oAuth2Client.getAccessToken().catch((error: unknown) => {
+      if (isGoogleOAuthInvalidGrant(error)) {
+        throw new Error(
+          "YouTube OAuth refresh token was rejected by Google (invalid_grant). Regenerate YOUTUBE_REFRESH_TOKEN with the same YOUTUBE_CLIENT_ID/YOUTUBE_CLIENT_SECRET, then update the GitHub Actions secret.",
+          { cause: error },
+        );
+      }
+
+      throw error;
+    });
 
     if (!token)
       throw new Error("Failed to obtain access token from YouTube OAuth2");
@@ -199,4 +208,17 @@ export class YouTubeClient {
 
     return results;
   }
+}
+
+function isGoogleOAuthInvalidGrant(error: unknown): boolean {
+  if (!error || typeof error !== "object")
+    return false;
+
+  const maybeGoogleError = error as {
+    response?: { data?: { error?: unknown } };
+    cause?: { message?: unknown };
+  };
+
+  return maybeGoogleError.response?.data?.error === "invalid_grant"
+    || maybeGoogleError.cause?.message === "invalid_grant";
 }
