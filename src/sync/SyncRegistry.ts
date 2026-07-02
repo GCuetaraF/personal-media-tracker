@@ -1,8 +1,8 @@
 import { env } from "@/config/env";
 import { db } from "@/db/supabase";
-import { FreshRSSClient } from "@/sources/freshrss/FreshRSSClient";
-import { FreshRSSNormalizer } from "@/sources/freshrss/FreshRSSNormalizer";
-import { FreshRSSSync } from "@/sources/freshrss/FreshRSSSync";
+import { FreshRSSClient } from "@/sources/freshrss/FreshRssClient";
+import { FreshRSSNormalizer } from "@/sources/freshrss/FreshRssNormalizer";
+import { FreshRSSSync } from "@/sources/freshrss/FreshRssSync";
 import { MangaDexClient } from "@/sources/mangadex/MangaDexClient";
 import { MangaDexNormalizer } from "@/sources/mangadex/MangaDexNormalizer";
 import { MangaDexSync } from "@/sources/mangadex/MangaDexSync";
