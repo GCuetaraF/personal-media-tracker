@@ -13,7 +13,11 @@
     "build": "tsup src/index.ts --format esm --dts --outDir dist --clean",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:unit": "vitest run --exclude \"**/*.db.test.ts\"",
+    "test:db": "vitest run \"**/*.db.test.ts\"",
+    "check": "npm run lint && npm test && npm run build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.89.0",
