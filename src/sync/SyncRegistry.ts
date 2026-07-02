@@ -65,8 +65,8 @@ export const syncRegistry: Record<string, () => Promise<{ run: () => Promise<voi
     const clientSecret = env.YOUTUBE_CLIENT_SECRET;
     const refreshToken = env.YOUTUBE_REFRESH_TOKEN;
 
-    if (!apiKey || !clientId || !clientSecret || !refreshToken) {
-      throw new Error("Missing YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN or YOUTUBE_API_KEY in .env");
+    if (!apiKey || !env.YOUTUBE_PLAYLIST_ID) {
+      throw new Error("Missing YOUTUBE_API_KEY or YOUTUBE_PLAYLIST_ID in .env");
     }
 
     const client = new YouTubeClient(apiKey, clientId, clientSecret, refreshToken);

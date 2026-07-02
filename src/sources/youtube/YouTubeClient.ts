@@ -11,7 +11,12 @@ import type {
 } from "./types";
 
 export class YouTubeClient {
-  constructor(private apiKey: string, private clientId: string, private clientSecret: string, private refreshToken: string) { }
+  constructor(
+    private apiKey: string,
+    private clientId?: string,
+    private clientSecret?: string,
+    private refreshToken?: string,
+  ) { }
 
   async fetchFavouriteVideos(): Promise<YouTubeVideoRaw[]> {
     const channelsUrl = "https://www.googleapis.com/youtube/v3/channels";
@@ -152,6 +157,12 @@ export class YouTubeClient {
   }
 
   private async getAccessToken(): Promise<string> {
+    if (!this.clientId || !this.clientSecret || !this.refreshToken) {
+      throw new Error(
+        "Missing YouTube OAuth credentials. Set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET and YOUTUBE_REFRESH_TOKEN to sync OAuth-gated YouTube data.",
+      );
+    }
+
     const oAuth2Client = new OAuth2Client(this.clientId, this.clientSecret);
     oAuth2Client.setCredentials({ refresh_token: this.refreshToken });
 

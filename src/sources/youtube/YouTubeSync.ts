@@ -21,10 +21,24 @@ export class YouTubeSync {
   ) { }
 
   async run() {
-    await this.runChannelSubscriptions();
-    // await this.runPlaylists();
-    await this.runSyncFavouriteVideos();
-    // await this.runSyncVideosFromPlaylist();
+    await this.runSyncVideosFromPlaylist();
+    await this.tryRunOAuthGatedSyncs();
+  }
+
+  private async tryRunOAuthGatedSyncs() {
+    const oauthSyncs = [
+      () => this.runChannelSubscriptions(),
+      () => this.runSyncFavouriteVideos(),
+    ];
+
+    for (const runOAuthSync of oauthSyncs) {
+      try {
+        await runOAuthSync();
+      }
+      catch (error) {
+        console.warn("Secondary YouTube OAuth sync failed:", error);
+      }
+    }
   }
 
   private async runChannelSubscriptions() {

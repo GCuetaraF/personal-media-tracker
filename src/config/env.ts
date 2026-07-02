@@ -15,10 +15,10 @@ const serverSchema = z.object({
 
   // YOUTUBE
   YOUTUBE_PLAYLIST_ID: envValue,
-  YOUTUBE_CLIENT_ID: envValue,
   YOUTUBE_API_KEY: envValue,
-  YOUTUBE_CLIENT_SECRET: envValue,
-  YOUTUBE_REFRESH_TOKEN: envValue,
+  YOUTUBE_CLIENT_ID: envValue.optional(),
+  YOUTUBE_CLIENT_SECRET: envValue.optional(),
+  YOUTUBE_REFRESH_TOKEN: envValue.optional(),
 
   // RETROACHIEVEMENTS
   RETROACHIEVEMENTS_API_KEY: envValue.optional(),
