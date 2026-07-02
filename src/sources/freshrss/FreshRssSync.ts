@@ -3,8 +3,8 @@ import type { MetadataRepository } from "@/repositories/MetadataRepository";
 import type { RelationshipRepository } from "@/repositories/RelationshipRepository";
 import type { SourceSyncRepository } from "@/repositories/SourceSyncRepository";
 
-import type { FreshRSSClient } from "./FreshRSSClient";
-import type { FreshRSSNormalizer } from "./FreshRSSNormalizer";
+import type { FreshRSSClient } from "./FreshRssClient";
+import type { FreshRSSNormalizer } from "./FreshRssNormalizer";
 import type { FreshRSSSubscription } from "./types";
 
 export class FreshRSSSync {
