@@ -46,6 +46,9 @@ const serverSchema = z.object({
   FRESHRSS_API_PASSWORD: envValue.optional(),
   FRESHRSS_CATEGORY_NAME: envValue.optional(),
 
+  // PAGEBOUND
+  PAGEBOUND_USER_ID: envValue.optional(),
+
 });
 
 // eslint-disable-next-line node/no-process-env
@@ -81,6 +84,7 @@ const {
   FRESHRSS_USER_NAME,
   FRESHRSS_API_PASSWORD,
   FRESHRSS_CATEGORY_NAME,
+  PAGEBOUND_USER_ID,
 } = _serverEnv.data;
 
 export const env = {
@@ -105,6 +109,7 @@ export const env = {
   FRESHRSS_API_PASSWORD,
   FRESHRSS_USER_NAME,
   FRESHRSS_CATEGORY_NAME,
+  PAGEBOUND_USER_ID,
 };
 
 // eslint-disable-next-line no-console

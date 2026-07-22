@@ -1,11 +1,15 @@
 import { env } from "@/config/env";
 import { db } from "@/db/supabase";
+import { TrackableRepository } from "@/repositories/TrackableRepository";
 import { FreshRSSClient } from "@/sources/freshrss/FreshRssClient";
 import { FreshRSSNormalizer } from "@/sources/freshrss/FreshRssNormalizer";
 import { FreshRSSSync } from "@/sources/freshrss/FreshRssSync";
 import { MangaDexClient } from "@/sources/mangadex/MangaDexClient";
 import { MangaDexNormalizer } from "@/sources/mangadex/MangaDexNormalizer";
 import { MangaDexSync } from "@/sources/mangadex/MangaDexSync";
+import { PageboundClient } from "@/sources/pagebound/PageboundClient";
+import { PageboundNormalizer } from "@/sources/pagebound/PageboundNormalizer";
+import { PageboundSync } from "@/sources/pagebound/PageboundSync";
 import { RetroachievementsClient } from "@/sources/retroachievements/RetroachievementsClient";
 import { RetroachievementsNormalizer } from "@/sources/retroachievements/RetroachievementsNormalizer";
 import { RetroachievementsSync } from "@/sources/retroachievements/RetroachievementsSync";
@@ -131,5 +135,22 @@ export const syncRegistry: Record<string, () => Promise<{ run: () => Promise<voi
     const syncs = new SourceSyncRepository(db);
 
     return new FreshRSSSync(client, normalizer, entities, metadata, relationships, syncs);
+  },
+  pagebound: async () => {
+    const userId = env.PAGEBOUND_USER_ID;
+
+    if (!userId) {
+      throw new Error("Missing PAGEBOUND_USER_ID in .env");
+    }
+
+    const client = new PageboundClient(userId);
+    const normalizer = new PageboundNormalizer();
+    const entities = new EntityRepository(db);
+    const metadata = new MetadataRepository(db);
+    const relationships = new RelationshipRepository(db);
+    const trackable = new TrackableRepository(db);
+    const syncs = new SourceSyncRepository(db);
+
+    return new PageboundSync(client, normalizer, entities, metadata, relationships, trackable, syncs);
   },
 };
