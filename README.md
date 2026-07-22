@@ -4,9 +4,9 @@ Unified tracker for games, videos, shows, and manga. Syncs from multiple platfor
 
 ## Supported Platforms
 
-🎮 Steam • RetroAchievements  
-📺 YouTube • Twitch • Trakt  
-📚 MangaDex • FreshRSS
+🎮 Steam • RetroAchievements
+📺 YouTube • Twitch • Trakt
+📚 MangaDex • FreshRSS • Pagebound
 
 ## Tech Stack
 
