@@ -2,6 +2,9 @@
 
 Unified tracker for games, videos, shows, and manga. Syncs from multiple platforms into one database.
 
+![Scheduled Sync](https://github.com/KuluGary/personal-media-tracker/actions/workflows/scheduled-sync.yml/badge.svg)
+![Tests](https://github.com/KuluGary/personal-media-tracker/actions/workflows/test.yml/badge.svg)
+
 ## Supported Platforms
 
 🎮 Steam • RetroAchievements
